@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Admin | ECO Green &amp; Health Football Championship 2026</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="admin.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="admin.js" defer></script>
+</head>
+<body>
+    <main class="admin-shell">
+        <header class="topbar">
+            <div class="brand-lockup">
+                <span class="brand-mark" aria-hidden="true">
+                    <svg viewBox="0 0 48 48" fill="none">
+                        <circle cx="24" cy="24" r="19" stroke="currentColor" stroke-width="2.2"/>
+                        <path d="m18.7 18.5 5.3-3.8 5.3 3.8-2 6.1h-6.6l-2-6.1Zm5.3-3.8-1.6-9.4m6.9 13.2 8.3-4.8m-10.3 10.9 5.8 7.8m-12.4-7.8-5.8 7.8m-2.5-18.7 8.3 4.8M32.4 32.4l6.3 6.3m-23.1-6.3-6.3 6.3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <span>ECO</span>
+                </span>
+                <div>
+                    <p class="eyebrow">ECO GREEN &amp; HEALTH FOOTBALL CHAMPIONSHIP 2026</p>
+                    <h1>จัดการข้อมูลสมัคร</h1>
+                </div>
+            </div>
+            <button id="signOutButton" class="button button-secondary sign-out-button hidden" type="button">ออกจากระบบ</button>
+        </header>
+
+        <section id="loginPanel" class="panel login-panel">
+            <div class="panel-heading">
+                <span class="heading-icon" aria-hidden="true">
+                    <svg viewBox="0 0 48 48" fill="none">
+                        <circle cx="24" cy="24" r="19" stroke="currentColor" stroke-width="2.2"/>
+                        <path d="m18.7 18.5 5.3-3.8 5.3 3.8-2 6.1h-6.6l-2-6.1Zm5.3-3.8-1.6-9.4m6.9 13.2 8.3-4.8m-10.3 10.9 5.8 7.8m-12.4-7.8-5.8 7.8m-2.5-18.7 8.3 4.8M32.4 32.4l6.3 6.3m-23.1-6.3-6.3 6.3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </span>
+                <div>
+                    <p class="login-kicker">ADMIN ACCESS</p>
+                    <h2>เข้าสู่ระบบผู้ดูแล</h2>
+                    <p>ใช้บัญชีผู้ดูแลที่ได้รับอนุญาตใน Supabase</p>
+                </div>
+            </div>
+            <form id="loginForm" class="login-form">
+                <label for="email">อีเมล</label>
+                <input id="email" name="email" type="email" autocomplete="username" required>
+                <label for="password">รหัสผ่าน</label>
+                <input id="password" name="password" type="password" autocomplete="current-password" required>
+                <p id="loginError" class="status-message status-error hidden" role="alert"></p>
+                <button id="loginButton" class="button button-primary" type="submit">เข้าสู่ระบบ</button>
+            </form>
+        </section>
+
+        <section id="dashboardPanel" class="hidden">
+            <div class="dashboard-intro">
+                <div>
+                    <p class="section-kicker">ภาพรวมการแข่งขัน</p>
+                    <h2>ภาพรวมการสมัคร</h2>
+                    <p>ติดตามจำนวนผู้สมัครและสถานะการชำระเงินในที่เดียว</p>
+                </div>
+                <span class="dashboard-tag"><span aria-hidden="true"></span> ศูนย์จัดการ</span>
+            </div>
+            <div class="section-heading">
+                <h3>จำนวนใบสมัครตามประเภท</h3>
+                <span>อัปเดตจากฐานข้อมูล</span>
+            </div>
+            <div class="summary-grid">
+                <article class="summary-card summary-total">
+                    <span class="summary-label">ใบสมัครที่พบ</span>
+                    <strong id="totalCount">0</strong>
+                </article>
+                <article class="summary-card summary-3v3">
+                    <span class="summary-label">ฟุตบอล 3 คน</span>
+                    <strong id="count3v3">0</strong>
+                </article>
+                <article class="summary-card summary-1v1">
+                    <span class="summary-label">ฟุตบอล 1 ต่อ 1</span>
+                    <strong id="count1v1">0</strong>
+                </article>
+                <article class="summary-card summary-crossbar">
+                    <span class="summary-label">ยิงชนคาน</span>
+                    <strong id="countCrossbar">0</strong>
+                </article>
+            </div>
+            <div class="section-heading finance-heading">
+                <h3>สรุปการชำระเงิน</h3>
+                <span>ยอดเงินแยกตามสถานะ</span>
+            </div>
+            <div class="summary-grid finance-grid">
+                <article class="summary-card finance-card finance-paid">
+                    <span class="summary-label">ยอดยืนยันชำระแล้ว</span>
+                    <strong id="paidAmount">฿0</strong>
+                </article>
+                <article class="summary-card finance-card finance-pending">
+                    <span class="summary-label">ยอดรอตรวจสอบ</span>
+                    <strong id="pendingAmount">฿0</strong>
+                </article>
+                <article class="summary-card finance-card finance-count">
+                    <span class="summary-label">ใบสมัครรอตรวจ</span>
+                    <strong id="pendingCount">0</strong>
+                </article>
+            </div>
+
+            <section id="registrationDeadlinePanel" class="panel deadline-panel">
+                <div class="deadline-heading">
+                    <div>
+                        <p class="section-kicker">ตั้งค่าการรับสมัคร</p>
+                        <h2>กำหนดวันและเวลาปิดรับสมัคร</h2>
+                        <p>ใช้เวลาไทย (UTC+7) และมีผลทันทีทั้งหน้าเว็บและการตรวจสอบบนเซิร์ฟเวอร์</p>
+                    </div>
+                    <span id="currentRegistrationDeadline" class="deadline-current">กำลังโหลด...</span>
+                </div>
+                <form id="registrationDeadlineForm" class="deadline-form">
+                    <label for="registrationDeadlineDate">
+                        วันปิดรับสมัคร
+                        <input id="registrationDeadlineDate" name="deadlineDate" type="date" required disabled>
+                    </label>
+                    <label for="registrationDeadlineTime">
+                        เวลาปิดรับสมัคร
+                        <input id="registrationDeadlineTime" name="deadlineTime" type="time" step="60" required disabled>
+                    </label>
+                    <button id="saveRegistrationDeadlineButton" class="button button-primary" type="submit" disabled>บันทึกกำหนดปิดรับ</button>
+                </form>
+                <p id="deadlineSettingsStatus" class="status-message hidden" role="status"></p>
+            </section>
+
+            <section class="panel">
+                <div class="toolbar">
+                    <div>
+                        <h2>รายการสมัคร</h2>
+                        <p id="resultSummary" class="muted">กำลังโหลดข้อมูล...</p>
+                    </div>
+                    <div class="toolbar-actions">
+                        <button id="exportButton" class="button button-secondary" type="button">ส่งออก CSV</button>
+                        <button id="refreshButton" class="button button-secondary" type="button">รีเฟรช</button>
+                    </div>
+                </div>
+
+                <div class="filters">
+                    <label class="search-field">
+                        <span>ค้นหา</span>
+                        <input id="searchInput" type="search" placeholder="ชื่อทีม ผู้ติดต่อ เบอร์โทร หรือ LINE">
+                    </label>
+                    <label>
+                        <span>ประเภทการแข่งขัน</span>
+                        <select id="activityFilter">
+                            <option value="">ทั้งหมด</option>
+                            <option value="3v3">ฟุตบอล 3 คน</option>
+                            <option value="1v1">ฟุตบอล 1 ต่อ 1</option>
+                            <option value="crossbar">ยิงชนคาน</option>
+                        </select>
+                    </label>
+                    <label>
+                        <span>รุ่นอายุ</span>
+                        <select id="ageFilter" disabled>
+                            <option value="">ทุกรุ่นอายุ</option>
+                        </select>
+                    </label>
+                    <label>
+                        <span>สถานะชำระเงิน</span>
+                        <select id="statusFilter">
+                            <option value="">ทุกสถานะ</option>
+                            <option value="pending">รอตรวจสอบ</option>
+                            <option value="paid">ยืนยันชำระแล้ว</option>
+                            <option value="rejected">สลิปไม่ถูกต้อง</option>
+                            <option value="cancelled">ยกเลิก</option>
+                        </select>
+                    </label>
+                    <label>
+                        <span>สมัครตั้งแต่</span>
+                        <input id="dateFrom" type="date">
+                    </label>
+                    <label>
+                        <span>ถึงวันที่</span>
+                        <input id="dateTo" type="date">
+                    </label>
+                </div>
+
+                <p id="dashboardStatus" class="status-message hidden" role="status"></p>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ผู้สมัคร / ทีม</th>
+                                <th>ข้อมูลติดต่อ</th>
+                                <th>รายการ / รุ่นอายุ</th>
+                                <th>ค่าสมัคร</th>
+                                <th>สถานะ</th>
+                                <th>วันที่สมัคร</th>
+                                <th>สลิป</th>
+                                <th>จัดการ</th>
+                            </tr>
+                        </thead>
+                        <tbody id="registrationRows">
+                            <tr><td class="empty-state" colspan="8">กำลังโหลดข้อมูล...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="pagination">
+                    <button id="previousPage" class="button button-secondary" type="button" disabled>ก่อนหน้า</button>
+                    <span id="pageLabel">หน้า 1</span>
+                    <button id="nextPage" class="button button-secondary" type="button" disabled>ถัดไป</button>
+                </div>
+            </section>
+            <p class="privacy-note">ข้อมูลผู้สมัครและสลิปจะแสดงเฉพาะบัญชีผู้ดูแลที่ได้รับอนุญาต</p>
+        </section>
+    </main>
+
+    <div id="detailModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="detailTitle">
+        <div class="modal-backdrop" data-close-modal></div>
+        <section class="modal-panel">
+            <header class="modal-header">
+                <div>
+                    <p class="eyebrow">รายละเอียดใบสมัคร</p>
+                    <h2 id="detailTitle">ตรวจสอบใบสมัคร</h2>
+                </div>
+                <button id="closeDetailButton" class="icon-button" type="button" aria-label="ปิด">×</button>
+            </header>
+            <div id="detailContent" class="detail-grid"></div>
+            <div class="audit-section">
+                <h3>ประวัติการตรวจสอบ</h3>
+                <div id="auditHistory" class="audit-history">กำลังโหลดประวัติ...</div>
+            </div>
+            <form id="reviewForm" class="review-form">
+                <label for="reviewStatus">สถานะชำระเงิน</label>
+                <select id="reviewStatus" name="payment_status" required>
+                    <option value="pending">รอตรวจสอบ</option>
+                    <option value="paid">ยืนยันชำระแล้ว</option>
+                    <option value="rejected">สลิปไม่ถูกต้อง</option>
+                    <option value="cancelled">ยกเลิก</option>
+                </select>
+                <label for="adminNote">หมายเหตุสำหรับผู้ดูแล</label>
+                <textarea id="adminNote" name="admin_note" rows="3" maxlength="2000" placeholder="เช่น ตรวจสอบยอดแล้ว หรือขอให้ส่งสลิปใหม่"></textarea>
+                <p id="reviewStatusMessage" class="status-message hidden" role="status"></p>
+                <div class="modal-actions">
+                    <button id="cancelReviewButton" class="button button-secondary" type="button">ปิด</button>
+                    <button id="saveReviewButton" class="button button-primary" type="submit">บันทึกผลตรวจสอบ</button>
+                </div>
+            </form>
+        </section>
+    </div>
+
+    <div id="slipPreviewModal" class="modal slip-preview-modal hidden" role="dialog" aria-modal="true" aria-labelledby="slipPreviewTitle">
+        <div class="modal-backdrop" data-close-slip-preview></div>
+        <section class="slip-preview-panel">
+            <header class="slip-preview-header">
+                <h2 id="slipPreviewTitle">หลักฐานการชำระเงิน</h2>
+                <div class="slip-preview-actions">
+                    <button id="slipZoomOutButton" class="icon-button" type="button" aria-label="ย่อภาพ" title="ย่อภาพ">−</button>
+                    <span id="slipZoomLabel" class="slip-zoom-label">100%</span>
+                    <button id="slipZoomInButton" class="icon-button" type="button" aria-label="ขยายภาพ" title="ขยายภาพ">+</button>
+                    <button id="slipZoomResetButton" class="button button-secondary slip-zoom-reset" type="button">พอดีจอ</button>
+                    <a id="slipDownloadLink" class="button button-secondary slip-download" target="_blank" rel="noopener noreferrer" hidden>เปิดภาพต้นฉบับ</a>
+                    <button id="closeSlipPreviewButton" class="icon-button" type="button" aria-label="ปิด">×</button>
+                </div>
+            </header>
+            <p id="slipPreviewError" class="slip-preview-error hidden" role="status">ไม่สามารถแสดงภาพสลิปได้</p>
+            <div id="slipPreviewStage" class="slip-preview-stage" tabindex="0" aria-label="พื้นที่ดูภาพสลิป สามารถเลื่อนเพื่อดูส่วนต่าง ๆ ของภาพ">
+                <img id="slipPreviewImage" class="slip-preview-image" alt="ภาพสลิปการชำระเงิน">
+            </div>
+            <form id="slipReviewForm" class="slip-review-form">
+                <label for="slipPaymentStatus">สถานะชำระเงิน</label>
+                <select id="slipPaymentStatus" name="payment_status" required>
+                    <option value="pending">รอตรวจสอบ</option>
+                    <option value="paid">ยืนยันชำระแล้ว</option>
+                    <option value="rejected">สลิปไม่ถูกต้อง</option>
+                    <option value="cancelled">ยกเลิก</option>
+                </select>
+                <button id="saveSlipStatusButton" class="button button-primary" type="submit">บันทึกสถานะ</button>
+                <p id="slipReviewMessage" class="slip-review-message hidden" role="status"></p>
+            </form>
+        </section>
+    </div>
+</body>
+</html>
